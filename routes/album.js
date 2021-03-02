@@ -27,6 +27,14 @@ router.get("/create", async (req, res, next) => {
 
 // GET - update one album (form)
 
+router.get('/update/:id', (req, res, next) => {
+  const {id} = req.params;
+  AlbumModel.findById(id)
+    .then((album) => res.render('albumUpdate.hbs', album))
+    .catch((error) => {next(error)});
+    
+});
+
 // GET - delete one album
 
 // POST - create one album
@@ -44,5 +52,17 @@ router.post("/", uploader.single("cover"), async (req, res, next) => {
 });
 
 // POST - update one album
+
+router.post('/:id', async (req, res, next) => {
+try {
+  const {id} = req.params;
+  const {title, releaseDate, label, artist, cover} = req.body;
+  const updatedAlbum = await AlbumModel.findByIdAndUpdate(id, req.body,{new:true})
+    res.redirect(`/${updatedAlbum}`)
+}
+catch(error) {
+  next(error)
+}
+})
 
 module.exports = router;
